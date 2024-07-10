@@ -14,6 +14,7 @@ export default function DailyGame() {
   const [history, setHistory] = useState<submittedColorType[]>([]);
   const [devMode, setDevMode] = useState(true);
   const [firstGuessTaken, setFirstGuessTaken] = useState(false);
+  const [guessCount, setGuessCount] = useState(1)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, color: keyof colorType) => {
     const inputValue = e.target.value;
@@ -30,6 +31,8 @@ export default function DailyGame() {
 
   const checkGuess = () => {
     if (!firstGuessTaken) setFirstGuessTaken(true);
+    setGuessCount(guessCount + 1)
+    let guessNumber = guessCount
     guess.red = Number(guess.red);
     guess.green = Number(guess.green);
     guess.blue = Number(guess.blue);
@@ -38,7 +41,7 @@ export default function DailyGame() {
     const bStatus = getStatus(Number(guess.blue), targetColor.blue);
     const isCorrect = rStatus === 'correct' && gStatus === 'correct' && bStatus === 'correct';
 
-    setHistory(prev => [{ ...guess, rStatus, gStatus, bStatus, id: Date.now() }, ...prev].slice(0, 5));
+    setHistory(prev => [{ ...guess, rStatus, gStatus, bStatus, guessNumber }, ...prev].slice(0, 5));
     if (isCorrect) {
       alert("Correct!")
     }

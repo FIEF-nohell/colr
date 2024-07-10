@@ -8,6 +8,7 @@ export interface submittedColorType extends colorType {
     rStatus: string;
     gStatus: string;
     bStatus: string;
+    guessNumber: number;
 }
 
 
