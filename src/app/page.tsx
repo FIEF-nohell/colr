@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState } from 'react';
-import { generateRandomColor, getColor, getIcon, getStatus } from './services/game';
+import React, { useEffect, useState } from 'react';
+import { dateToRGB, getColor, getIcon, getStatus } from './services/game';
 import { colorType, submittedColorType } from './services/types';
 
 export default function DailyGame() {
+  const [date, setDate] = useState(new Date());
   const [multiple, setMultiple] = useState(5);
-  const [targetColor, setTargetColor] = useState<colorType>(generateRandomColor(multiple));
+  const [targetColor, setTargetColor] = useState<colorType>(dateToRGB(date, multiple));
   const [guess, setGuess] = useState<colorType>({ r: 128, g: 128, b: 128 });
   const [history, setHistory] = useState<submittedColorType[]>([]);
   const [devMode, setdevMode] = useState(true);
@@ -24,9 +25,7 @@ export default function DailyGame() {
 
     setHistory(prev => [{ ...guess, rStatus, gStatus, bStatus }, ...prev].slice(0, 3));
     if (isCorrect) {
-      alert('Correct! Generating new color.');
-      setTargetColor(generateRandomColor(multiple));
-      setHistory([]);
+      alert("Correct!")
     }
   };
 
