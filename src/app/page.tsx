@@ -92,10 +92,10 @@ export default function DailyGame() {
         }
       `}</style>
 
-      <motion.div className="flex flex-col items-center transition-all select-none justify-center min-h-screen bg-[rgb(15,15,15)] text-gray-300 p-4">
+      <motion.div className="flex flex-col items-center transition-all justify-center min-h-screen bg-[rgb(15,15,15)] text-gray-300 p-4">
 
         {/* guessing */}
-        <motion.div className="w-full max-w-md">
+        <motion.div className="w-full max-w-md select-none">
           <div className="bg-[rgb(30,30,30)] rounded-2xl shadow-lg p-6 mb-6">
             <div className="mb-6" onClick={() => logColor(targetColor)}>
               <div
@@ -120,7 +120,7 @@ export default function DailyGame() {
             <div className="grid grid-cols-3 gap-4 mb-6">
               {(['red', 'green', 'blue'] as const).map((color) => (
                 <div key={color} className="flex flex-col items-center">
-                  <label className="text-sm font-medium mb-1 text-gray-400">{color.toUpperCase()}</label>
+                  <label className={`text-sm font-medium mb-1 text-${color}-400`}>{color.toUpperCase()}</label>
                   <input
                     type="number"
                     min="0"
@@ -128,7 +128,7 @@ export default function DailyGame() {
                     step="1"
                     value={guess[color]}
                     onChange={(e) => handleChange(e, color)}
-                    className={`w-full bg-[rgb(50,50,50)] text-gray-200 rounded-xl px-2 py-1 text-center appearance-none outline-none border-2 border-${color}-400`}
+                    className={`w-full bg-[rgb(50,50,50)] text-gray-200 transition-all rounded-xl px-2 py-1 text-center appearance-none outline-none border-2 border-${color}-400`}
                   />
                 </div>
               ))}
@@ -136,7 +136,7 @@ export default function DailyGame() {
 
             <button
               onClick={checkGuess}
-              className="w-full py-2 bg-[rgb(50,50,50)] text-gray-200 font-semibold rounded-xl hover:bg-[rgb(60,60,60)] transition-colors"
+              className="w-full py-2 bg-[rgb(50,50,50)] text-gray-200 font-semibold rounded-xl hover:bg-[rgb(60,60,60)] transition-all"
             >
               Guess
             </button>
@@ -159,7 +159,7 @@ export default function DailyGame() {
                 >
                   <div
                     style={{ backgroundColor: `rgb(${item.red}, ${item.green}, ${item.blue})` }}
-                    className="w-16 h-16 rounded-xl shadow-md"
+                    className="w-16 h-16 rounded-xl shadow-md hover:cursor-pointer hover:scale-125 transition-all"
                   ></div>
                   <div className="guess-tooltip">
                     {item.red}, {item.green}, {item.blue}

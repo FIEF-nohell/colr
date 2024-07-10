@@ -31,3 +31,11 @@ body {
     text-wrap: balance;
   }
 }
+
+body, html {
+  overflow: hidden;
+}
+
+body::-webkit-scrollbar, html::-webkit-scrollbar {
+  display: none;
+}
