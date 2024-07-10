@@ -18,3 +18,12 @@ export interface monoColorType {
 export interface submittedMonoColorType extends monoColorType {
     cStatus: string;
 }
+
+export interface RGBInputsProps {
+    guess: colorType;
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>, color: keyof colorType) => void;
+}
+
+export interface HistoryDisplayProps {
+    history: submittedColorType[];
+}

@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { dateToRGB, getColor, getIcon, getStatus } from './services/game';
 import { colorType, submittedColorType } from './services/types';
 import { motion } from 'framer-motion';
+import RGBInputs from './components/rgb-inputs';
+import HistoryDisplay from './components/history-display';
 
 export default function DailyGame() {
   const [date] = useState(new Date());
@@ -49,49 +51,6 @@ export default function DailyGame() {
 
   return (
     <>
-      <style jsx>{`
-        /* Custom styles for input arrows */
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-          -webkit-appearance: none;
-          margin: 0;
-          opacity: 1;
-        }
-
-        input[type="number"]::-webkit-inner-spin-button {
-          background: rgb(75, 75, 75);
-          height: 100%;
-          width: 14px;
-          border-radius: 0 8px 8px 0;
-          cursor: pointer;
-        }
-
-        /* Firefox */
-        input[type="number"] {
-          -moz-appearance: textfield;
-        }
-
-        /* Hover effect for guess history */
-        .guess-square {
-          position: relative;
-        }
-        .guess-square:hover .guess-tooltip {
-          display: block;
-        }
-        .guess-tooltip {
-          display: none;
-          position: absolute;
-          bottom: 100%;
-          left: 50%;
-          transform: translateX(-50%);
-          background: rgba(0, 0, 0, 0.8);
-          color: white;
-          padding: 2px 6px;
-          border-radius: 4px;
-          white-space: nowrap;
-        }
-      `}</style>
-
       <motion.div className="flex flex-col items-center transition-all justify-center min-h-screen bg-[rgb(15,15,15)] text-gray-300 p-4">
 
         {/* guessing */}
@@ -117,22 +76,7 @@ export default function DailyGame() {
               </div>
             )}
 
-            <div className="grid grid-cols-3 gap-4 mb-6">
-              {(['red', 'green', 'blue'] as const).map((color) => (
-                <div key={color} className="flex flex-col items-center">
-                  <label className={`text-sm font-medium mb-1 text-${color}-400`}>{color.toUpperCase()}</label>
-                  <input
-                    type="number"
-                    min="0"
-                    max="255"
-                    step="1"
-                    value={guess[color]}
-                    onChange={(e) => handleChange(e, color)}
-                    className={`w-full bg-[rgb(50,50,50)] text-gray-200 transition-all rounded-xl px-2 py-1 text-center appearance-none outline-none border-2 border-${color}-400`}
-                  />
-                </div>
-              ))}
-            </div>
+            <RGBInputs guess={guess} handleChange={handleChange}></RGBInputs>
 
             <button
               onClick={checkGuess}
@@ -145,29 +89,7 @@ export default function DailyGame() {
 
         {/* feedback */}
         {firstGuessTaken && (
-          <motion.div
-            className="absolute bottom-4 w-full flex justify-center"
-          >
-            <div className="flex space-x-4">
-              {history.slice(0, 5).map((item, index) => (
-                <motion.div
-                  key={index}
-                  className="guess-square"
-                  initial={{ opacity: 0.7, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <div
-                    style={{ backgroundColor: `rgb(${item.red}, ${item.green}, ${item.blue})` }}
-                    className="w-16 h-16 rounded-xl shadow-md hover:cursor-pointer hover:scale-125 transition-all"
-                  ></div>
-                  <div className="guess-tooltip">
-                    {item.red}, {item.green}, {item.blue}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+          <HistoryDisplay history={history}></HistoryDisplay>
         )}
 
         <input
