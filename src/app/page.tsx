@@ -1,26 +1,34 @@
-"use client";
-
-import React, { useEffect, useState } from 'react';
+"use client"
+import React, { useState } from 'react';
 import { dateToRGB, getColor, getIcon, getStatus } from './services/game';
 import { colorType, submittedColorType } from './services/types';
 
 export default function DailyGame() {
-  const [date, setDate] = useState(new Date());
-  const [multiple, setMultiple] = useState(5);
+  const [date] = useState(new Date());
+  const [multiple] = useState(5);
   const [targetColor, setTargetColor] = useState<colorType>(dateToRGB(date, multiple));
-  const [guess, setGuess] = useState<colorType>({ r: 128, g: 128, b: 128 });
+  const [guess, setGuess] = useState<colorType>({ red: 128, green: 128, blue: 128 });
   const [history, setHistory] = useState<submittedColorType[]>([]);
-  const [devMode, setdevMode] = useState(true);
+  const [devMode, setDevMode] = useState(true);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, color: string) => {
-    const value = parseInt(e.target.value);
-    setGuess(prev => ({ ...prev, [color]: value }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, color: keyof colorType) => {
+    const inputValue = e.target.value;
+
+    if ((Number(inputValue) >= 0 && Number(inputValue) <= 255)) {
+      setGuess(prev => ({ ...prev, [color]: inputValue }));
+    }
+    else if (Number(inputValue) <= 0) {
+      setGuess(prev => ({ ...prev, [color]: 0 }));
+    }
+    else if (Number(inputValue) >= 255) {
+      setGuess(prev => ({ ...prev, [color]: 255 }));
+    }
   };
 
   const checkGuess = () => {
-    const rStatus = getStatus(guess.r, targetColor.r);
-    const gStatus = getStatus(guess.g, targetColor.g);
-    const bStatus = getStatus(guess.b, targetColor.b);
+    const rStatus = getStatus(Number(guess.red), targetColor.red);
+    const gStatus = getStatus(Number(guess.green), targetColor.green);
+    const bStatus = getStatus(Number(guess.blue), targetColor.blue);
     const isCorrect = rStatus === 'correct' && gStatus === 'correct' && bStatus === 'correct';
 
     setHistory(prev => [{ ...guess, rStatus, gStatus, bStatus }, ...prev].slice(0, 3));
@@ -30,57 +38,111 @@ export default function DailyGame() {
   };
 
   const logColor = (col: colorType) => {
-    if (!devMode) return
+    if (!devMode) return;
     console.log(col);
   };
 
   return (
     <>
-      <input type="checkbox" defaultChecked name="dev-mode" id="" className='top-0 left-0 absolute' onChange={e => setdevMode(e.target.checked)} />
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-800 via-gray-900 to-black select-none">
-        <div className="text-center p-8 max-w-xl w-full mx-auto bg-gray-800 rounded-xl shadow-2xl border border-gray-700" style={{ width: '1200px', height: 'auto' }}>
-          <h1 className="text-4xl font-bold text-white mb-6">Colr - The RGB Color Guesser</h1>
+      <style jsx>{`
+        /* Custom styles for input arrows */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+          opacity: 1;
+        }
 
-          <div className="mb-8" onClick={() => logColor(targetColor)}>
-            <div style={{ backgroundColor: `rgb(${targetColor.r}, ${targetColor.g}, ${targetColor.b})` }} className="w-48 h-48 rounded-lg shadow-xl mx-auto">
-              {devMode && <p className='text-center margin-auto bg-black text-white'>{targetColor.r}, {targetColor.g}, {targetColor.b}</p>}
-            </div>
-          </div>
+        input[type="number"]::-webkit-inner-spin-button {
+          background: rgb(75, 75, 75);
+          height: 100%;
+          width: 14px;
+          border-radius: 0 8px 8px 0;
+          cursor: pointer;
+        }
 
-          {devMode &&
-            <div className="mb-8" onClick={() => logColor(guess)}>
-              <div style={{ backgroundColor: `rgb(${guess.r}, ${guess.g}, ${guess.b})` }} className="w-48 h-48 rounded-lg shadow-xl mx-auto">
-                <p className='text-center margin-auto bg-black text-white'>{guess.r}, {guess.g}, {guess.b}</p>
+        /* Firefox */
+        input[type="number"] {
+          -moz-appearance: textfield;
+        }
+      `}</style>
+
+      <div className="flex flex-col items-center justify-center min-h-screen bg-[rgb(15,15,15)] text-gray-300 p-4">
+        <div className="w-full max-w-md">
+
+          <div className="bg-[rgb(30,30,30)] rounded-2xl shadow-lg p-6 mb-6">
+            <div className="mb-6" onClick={() => logColor(targetColor)}>
+              <div
+                style={{ backgroundColor: `rgb(${targetColor.red}, ${targetColor.green}, ${targetColor.blue})` }}
+                className="h-32 rounded-xl shadow-md mx-auto flex items-center justify-center"
+              >
+                <p className='text-2xl font-bold text-center bg-[rgb(30,30,30)] px-3 py-1 rounded-lg'>daily colr</p>
               </div>
             </div>
-          }
 
-
-          <div className="space-y-4">
-            {(['r', 'g', 'b'] as const).map((color) => (
-              <div key={color}>
-                <label className="text-lg font-semibold text-white">{color.toUpperCase()}: {guess[color]}</label>
-                <input type="range" min="0" max="255" step="5" value={guess[color]} onChange={(e) => handleChange(e, color)} className="w-full h-2 bg-gradient-to-r from-green-500 to-blue-500 rounded cursor-pointer appearance-none" />
+            {devMode && (
+              <div className="mb-6" onClick={() => logColor(guess)}>
+                <div
+                  style={{ backgroundColor: `rgb(${guess.red}, ${guess.green}, ${guess.blue})` }}
+                  className="h-32 rounded-xl shadow-md mx-auto"
+                >
+                  <p className='text-xs text-center rounded-t-xl bg-black bg-opacity-50 text-white p-1'>{guess.red}, {guess.green}, {guess.blue}</p>
+                </div>
               </div>
-            ))}
+            )}
+
+            <div className="grid grid-cols-3 gap-4 mb-6">
+              {(['red', 'green', 'blue'] as const).map((color) => (
+                <div key={color} className="flex flex-col items-center">
+                  <label className="text-sm font-medium mb-1 text-gray-400">{color.toUpperCase()}</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="255"
+                    step="1"
+                    value={guess[color]}
+                    onChange={(e) => handleChange(e, color)}
+                    className={`w-full bg-[rgb(50,50,50)] text-gray-200 rounded-xl px-2 py-1 text-center appearance-none outline-none border-2 border-${color}-400`}
+                  />
+                </div>
+              ))}
+            </div>
+
+            <button
+              onClick={checkGuess}
+              className="w-full py-2 bg-[rgb(50,50,50)] text-gray-200 font-semibold rounded-xl hover:bg-[rgb(60,60,60)] transition-colors"
+            >
+              Guess
+            </button>
           </div>
-          <button onClick={checkGuess} className="mt-6 px-10 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white font-bold rounded-full shadow-lg hover:bg-green-600 transition-colors">Guess</button>
-          <div className="mt-8">
-            <h2 className="text-2xl font-semibold text-white mb-3">Color History</h2>
-            <div className="grid grid-cols-3 gap-4 justify-center mt-3">
+
+          <div className="bg-[rgb(30,30,30)] rounded-2xl shadow-lg p-6">
+            <h2 className="text-xl font-semibold mb-4 text-gray-200">Color History</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {history.map((item, index) => (
-                <div key={index} className="text-center p-2">
-                  <div style={{ backgroundColor: `rgb(${item.r}, ${item.g}, ${item.b})` }} className="w-24 h-24 rounded-lg shadow-md mb-2"></div>
-                  <div className="flex justify-between text-sm font-medium">
-                    <span className={getColor(item.rStatus)}>{item.r} {getIcon(item.rStatus)}</span>
-                    <span className={getColor(item.gStatus)}>{item.g} {getIcon(item.gStatus)}</span>
-                    <span className={getColor(item.bStatus)}>{item.b} {getIcon(item.bStatus)}</span>
+                <div key={index} className="bg-gray-800 rounded-xl p-2">
+                  <div
+                    style={{ backgroundColor: `rgb(${item.red}, ${item.green}, ${item.blue})` }}
+                    className="w-full h-16 rounded-xl mb-2"
+                  ></div>
+                  <div className="flex justify-between text-xs">
+                    <span className={getColor(item.rStatus)}>{item.red} {getIcon(item.rStatus)}</span>
+                    <span className={getColor(item.gStatus)}>{item.green} {getIcon(item.gStatus)}</span>
+                    <span className={getColor(item.bStatus)}>{item.blue} {getIcon(item.bStatus)}</span>
                   </div>
                 </div>
               ))}
             </div>
           </div>
         </div>
+
+        <input
+          type="checkbox"
+          defaultChecked
+          name="dev-mode"
+          className='absolute top-4 left-4'
+          onChange={e => setDevMode(e.target.checked)}
+        />
       </div>
     </>
   );

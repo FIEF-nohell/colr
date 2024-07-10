@@ -74,7 +74,7 @@ function dateToRGB(date: Date, multiple = 5): colorType {
     const g = (hash & 0x00FF00) >> 8;
     const b = (hash & 0x0000FF);
 
-    return adjustToMultiple({ r, g, b }, multiple);
+    return adjustToMultiple({ red: r, green: g, blue: b }, multiple);
 }
 
 function adjustToMultiple(rgb: colorType, m: number): colorType {
@@ -83,9 +83,9 @@ function adjustToMultiple(rgb: colorType, m: number): colorType {
     };
 
     return {
-        r: adjust(rgb.r, m),
-        g: adjust(rgb.g, m),
-        b: adjust(rgb.b, m)
+        red: adjust(rgb.red, m),
+        green: adjust(rgb.green, m),
+        blue: adjust(rgb.blue, m)
     };
 }
 

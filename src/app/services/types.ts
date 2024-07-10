@@ -1,7 +1,7 @@
 export interface colorType {
-    r: number;
-    g: number;
-    b: number;
+    red: number;
+    green: number;
+    blue: number;
 }
 
 export interface submittedColorType extends colorType {
