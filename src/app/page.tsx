@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { dateToRGB, getColor, getIcon, getStatus } from './services/game';
 import { colorType, submittedColorType } from './services/types';
+import { motion } from 'framer-motion';
 
 export default function DailyGame() {
   const [date] = useState(new Date());
@@ -10,10 +11,10 @@ export default function DailyGame() {
   const [guess, setGuess] = useState<colorType>({ red: 128, green: 128, blue: 128 });
   const [history, setHistory] = useState<submittedColorType[]>([]);
   const [devMode, setDevMode] = useState(true);
+  const [firstGuessTaken, setFirstGuessTaken] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, color: keyof colorType) => {
     const inputValue = e.target.value;
-
     if ((Number(inputValue) >= 0 && Number(inputValue) <= 255)) {
       setGuess(prev => ({ ...prev, [color]: inputValue }));
     }
@@ -26,12 +27,16 @@ export default function DailyGame() {
   };
 
   const checkGuess = () => {
+    if (!firstGuessTaken) setFirstGuessTaken(true);
+    guess.red = Number(guess.red);
+    guess.green = Number(guess.green);
+    guess.blue = Number(guess.blue);
     const rStatus = getStatus(Number(guess.red), targetColor.red);
     const gStatus = getStatus(Number(guess.green), targetColor.green);
     const bStatus = getStatus(Number(guess.blue), targetColor.blue);
     const isCorrect = rStatus === 'correct' && gStatus === 'correct' && bStatus === 'correct';
 
-    setHistory(prev => [{ ...guess, rStatus, gStatus, bStatus }, ...prev].slice(0, 3));
+    setHistory(prev => [{ ...guess, rStatus, gStatus, bStatus, id: Date.now() }, ...prev].slice(0, 5));
     if (isCorrect) {
       alert("Correct!")
     }
@@ -65,11 +70,32 @@ export default function DailyGame() {
         input[type="number"] {
           -moz-appearance: textfield;
         }
+
+        /* Hover effect for guess history */
+        .guess-square {
+          position: relative;
+        }
+        .guess-square:hover .guess-tooltip {
+          display: block;
+        }
+        .guess-tooltip {
+          display: none;
+          position: absolute;
+          bottom: 100%;
+          left: 50%;
+          transform: translateX(-50%);
+          background: rgba(0, 0, 0, 0.8);
+          color: white;
+          padding: 2px 6px;
+          border-radius: 4px;
+          white-space: nowrap;
+        }
       `}</style>
 
-      <div className="flex flex-col items-center justify-center min-h-screen bg-[rgb(15,15,15)] text-gray-300 p-4">
-        <div className="w-full max-w-md">
+      <motion.div className="flex flex-col items-center transition-all select-none justify-center min-h-screen bg-[rgb(15,15,15)] text-gray-300 p-4">
 
+        {/* guessing */}
+        <motion.div className="w-full max-w-md">
           <div className="bg-[rgb(30,30,30)] rounded-2xl shadow-lg p-6 mb-6">
             <div className="mb-6" onClick={() => logColor(targetColor)}>
               <div
@@ -115,26 +141,34 @@ export default function DailyGame() {
               Guess
             </button>
           </div>
+        </motion.div>
 
-          <div className="bg-[rgb(30,30,30)] rounded-2xl shadow-lg p-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-200">Color History</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {history.map((item, index) => (
-                <div key={index} className="bg-gray-800 rounded-xl p-2">
+        {/* feedback */}
+        {firstGuessTaken && (
+          <motion.div
+            className="absolute bottom-4 w-full flex justify-center"
+          >
+            <div className="flex space-x-4">
+              {history.slice(0, 5).map((item, index) => (
+                <motion.div
+                  key={index}
+                  className="guess-square"
+                  initial={{ opacity: 0.7, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
                   <div
                     style={{ backgroundColor: `rgb(${item.red}, ${item.green}, ${item.blue})` }}
-                    className="w-full h-16 rounded-xl mb-2"
+                    className="w-16 h-16 rounded-xl shadow-md"
                   ></div>
-                  <div className="flex justify-between text-xs">
-                    <span className={getColor(item.rStatus)}>{item.red} {getIcon(item.rStatus)}</span>
-                    <span className={getColor(item.gStatus)}>{item.green} {getIcon(item.gStatus)}</span>
-                    <span className={getColor(item.bStatus)}>{item.blue} {getIcon(item.bStatus)}</span>
+                  <div className="guess-tooltip">
+                    {item.red}, {item.green}, {item.blue}
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
-          </div>
-        </div>
+          </motion.div>
+        )}
 
         <input
           type="checkbox"
@@ -143,7 +177,7 @@ export default function DailyGame() {
           className='absolute top-4 left-4'
           onChange={e => setDevMode(e.target.checked)}
         />
-      </div>
+      </motion.div>
     </>
   );
 }
