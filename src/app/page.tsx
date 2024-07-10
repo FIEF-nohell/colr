@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { generateRandomColor, getColor, getIcon, getStatus } from './services/game';
 import { colorType, submittedColorType } from './services/types';
 
-export default function Colr() {
+export default function DailyGame() {
   const [multiple, setMultiple] = useState(5);
   const [targetColor, setTargetColor] = useState<colorType>(generateRandomColor(multiple));
   const [guess, setGuess] = useState<colorType>({ r: 128, g: 128, b: 128 });
