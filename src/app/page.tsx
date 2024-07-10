@@ -1,27 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { generateRandomColor, getColor, getIcon, getStatus } from './services/game';
+import { colorType, submittedColorType } from './services/types';
 
 export default function Colr() {
-  const [targetColor, setTargetColor] = useState({ r: 128, g: 128, b: 128 }); // Set an initial static state
-  const [guess, setGuess] = useState({ r: 128, g: 128, b: 128 });
-  const [history, setHistory] = useState<{ r: number, g: number, b: number, rStatus: string, gStatus: string, bStatus: string }[]>([]);
-
-  useEffect(() => {
-    setTargetColor(generateRandomColor()); // Regenerate random colors upon client-side mounting
-  }, []);
-
-  function generateRandomColor() {
-    return {
-      r: genNum(),
-      g: genNum(),
-      b: genNum(),
-    };
-  }
-
-  function genNum() {
-    return Math.floor(Math.random() * 51) * 5; // Generate numbers that are multiples of 5
-  }
+  const [multiple, setMultiple] = useState(5);
+  const [targetColor, setTargetColor] = useState<colorType>(generateRandomColor(multiple));
+  const [guess, setGuess] = useState<colorType>({ r: 128, g: 128, b: 128 });
+  const [history, setHistory] = useState<submittedColorType[]>([]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, color: string) => {
     const value = parseInt(e.target.value);
@@ -37,19 +24,12 @@ export default function Colr() {
     setHistory(prev => [{ ...guess, rStatus, gStatus, bStatus }, ...prev].slice(0, 3));
     if (isCorrect) {
       alert('Correct! Generating new color.');
-      setTargetColor(generateRandomColor());
+      setTargetColor(generateRandomColor(multiple));
       setHistory([]);
     }
   };
 
-  function getStatus(guess: number, target: number) {
-    if (guess < target) {
-      return 'low';
-    } else if (guess > target) {
-      return 'high';
-    }
-    return 'correct';
-  }
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-800 via-gray-900 to-black">
@@ -85,26 +65,4 @@ export default function Colr() {
       </div>
     </div>
   );
-}
-
-function getIcon(status: string) {
-  switch (status) {
-    case 'low':
-      return '🔼';
-    case 'high':
-      return '🔽';
-    default:
-      return '✅';
-  }
-}
-
-function getColor(status: string) {
-  switch (status) {
-    case 'low':
-      return 'text-orange-500';
-    case 'high':
-      return 'text-red-500';
-    default:
-      return 'text-green-500';
-  }
 }
