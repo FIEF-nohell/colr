@@ -1,14 +1,14 @@
 import { colorType } from "./types";
 
 function generateRandomColor(m: number): colorType {
-    function genNum(multiplier: number) {
+    function rnd(multiplier: number) {
         return Math.floor(Math.random() * (256 / multiplier)) * multiplier;
     }
 
     return {
-        red: genNum(m),
-        green: genNum(m),
-        blue: genNum(m),
+        red: rnd(m),
+        green: rnd(m),
+        blue: rnd(m),
     };
 }
 

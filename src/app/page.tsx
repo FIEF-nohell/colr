@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { dateToRGB, generateRandomColor, getStatus } from './services/game';
 import { colorType, submittedColorType } from './services/types';
 import { motion } from 'framer-motion';
@@ -9,12 +9,16 @@ import HistoryDisplay from './components/history-display';
 export default function DailyGame() {
   const [date] = useState(new Date());
   const [multiple] = useState(5);
-  const [targetColor, setTargetColor] = useState<colorType>(generateRandomColor(multiple));
+  const [targetColor, setTargetColor] = useState<colorType>({ red: 30, green: 30, blue: 30 });
   const [guess, setGuess] = useState<colorType>({ red: 0, green: 0, blue: 0 });
   const [history, setHistory] = useState<submittedColorType[]>([]);
   const [devMode, setDevMode] = useState(false);
   const [firstGuessTaken, setFirstGuessTaken] = useState(false);
   const [guessCount, setGuessCount] = useState(1)
+
+  useEffect(() => {
+    setTargetColor(generateRandomColor(multiple))
+  }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, color: keyof colorType) => {
     const inputValue = e.target.value;
@@ -74,7 +78,7 @@ export default function DailyGame() {
             <div className="mb-6" onClick={() => logColor(targetColor)}>
               <div
                 style={{ backgroundColor: `rgb(${targetColor.red}, ${targetColor.green}, ${targetColor.blue})` }}
-                className="h-32 rounded-xl shadow-md mx-auto flex items-center justify-center"
+                className="h-32 rounded-xl shadow-md mx-auto flex items-center justify-center transition-colors duration-700 "
               >
                 <p className='text-2xl font-bold text-center bg-[rgb(30,30,30)] px-3 py-1 rounded-lg'>random colr</p>
               </div>
