@@ -1,6 +1,6 @@
 export default {
     output: 'export',
-    assetPrefix: './',
+    assetPrefix: process.env.NODE_ENV === 'production' ? '/colr/' : '',
     images: {
         unoptimized: true,
     },
