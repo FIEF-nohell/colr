@@ -76,7 +76,7 @@ export default function DailyGame() {
                 style={{ backgroundColor: `rgb(${targetColor.red}, ${targetColor.green}, ${targetColor.blue})` }}
                 className="h-32 rounded-xl shadow-md mx-auto flex items-center justify-center"
               >
-                <p className='text-2xl font-bold text-center bg-[rgb(30,30,30)] px-3 py-1 rounded-lg'>daily colr</p>
+                <p className='text-2xl font-bold text-center bg-[rgb(30,30,30)] px-3 py-1 rounded-lg'>random colr</p>
               </div>
             </div>
 
