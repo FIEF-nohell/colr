@@ -2,7 +2,7 @@ import { colorType } from "./types";
 
 function generateRandomColor(m: number): colorType {
     function genNum(multiplier: number) {
-        return Math.floor(rnd() * (256 / multiplier)) * multiplier;
+        return Math.floor(Math.random() * (256 / multiplier)) * multiplier;
     }
 
     return {
@@ -10,16 +10,6 @@ function generateRandomColor(m: number): colorType {
         green: genNum(m),
         blue: genNum(m),
     };
-}
-
-function seededRandom(seed: number): number {
-    let x = Math.sin(seed) * 10000;
-    return x - Math.floor(x);
-}
-
-function rnd(): number {
-    const unixTimestamp = Date.now();
-    return seededRandom(unixTimestamp);
 }
 
 function generateRandomMonoColor(m: number) {
