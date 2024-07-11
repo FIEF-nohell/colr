@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react';
-import { dateToRGB, getColor, getIcon, getStatus } from './services/game';
+import { dateToRGB, generateRandomColor, getStatus } from './services/game';
 import { colorType, submittedColorType } from './services/types';
 import { motion } from 'framer-motion';
 import RGBInputs from './components/rgb-inputs';
@@ -9,10 +9,10 @@ import HistoryDisplay from './components/history-display';
 export default function DailyGame() {
   const [date] = useState(new Date());
   const [multiple] = useState(5);
-  const [targetColor, setTargetColor] = useState<colorType>(dateToRGB(date, multiple));
+  const [targetColor, setTargetColor] = useState<colorType>(generateRandomColor(multiple));
   const [guess, setGuess] = useState<colorType>({ red: 0, green: 0, blue: 0 });
   const [history, setHistory] = useState<submittedColorType[]>([]);
-  const [devMode, setDevMode] = useState(true);
+  const [devMode, setDevMode] = useState(false);
   const [firstGuessTaken, setFirstGuessTaken] = useState(false);
   const [guessCount, setGuessCount] = useState(1)
 
@@ -30,8 +30,8 @@ export default function DailyGame() {
   };
 
   const resetDailyGame = () => {
-    setTargetColor(dateToRGB(date, multiple));
-    setGuess({ red: 128, green: 128, blue: 128 });
+    setTargetColor(generateRandomColor(multiple));
+    setGuess({ red: 0, green: 0, blue: 0 });
     setHistory([]);
     setGuessCount(1)
     setFirstGuessTaken(false);
@@ -41,7 +41,6 @@ export default function DailyGame() {
     if (!firstGuessTaken) setFirstGuessTaken(true);
     if (guessCount > 5) {
       resetDailyGame()
-      alert("Too many guesses. Game over.")
       return
     }
     setGuessCount(guessCount + 1)
@@ -111,13 +110,13 @@ export default function DailyGame() {
           <HistoryDisplay history={history}></HistoryDisplay>
         )}
 
-        <input
+        {/* <input
           type="checkbox"
           defaultChecked
           name="dev-mode"
           className='absolute top-4 left-4'
           onChange={e => setDevMode(e.target.checked)}
-        />
+        /> */}
       </motion.div>
     </>
   );
