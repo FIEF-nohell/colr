@@ -10,7 +10,7 @@ export default function DailyGame() {
   const [date] = useState(new Date());
   const [multiple] = useState(5);
   const [targetColor, setTargetColor] = useState<colorType>(dateToRGB(date, multiple));
-  const [guess, setGuess] = useState<colorType>({ red: 128, green: 128, blue: 128 });
+  const [guess, setGuess] = useState<colorType>({ red: 0, green: 0, blue: 0 });
   const [history, setHistory] = useState<submittedColorType[]>([]);
   const [devMode, setDevMode] = useState(true);
   const [firstGuessTaken, setFirstGuessTaken] = useState(false);
@@ -29,8 +29,21 @@ export default function DailyGame() {
     }
   };
 
+  const resetDailyGame = () => {
+    setTargetColor(dateToRGB(date, multiple));
+    setGuess({ red: 128, green: 128, blue: 128 });
+    setHistory([]);
+    setGuessCount(1)
+    setFirstGuessTaken(false);
+  };
+
   const checkGuess = () => {
     if (!firstGuessTaken) setFirstGuessTaken(true);
+    if (guessCount > 5) {
+      resetDailyGame()
+      alert("Too many guesses. Game over.")
+      return
+    }
     setGuessCount(guessCount + 1)
     let guessNumber = guessCount
     guess.red = Number(guess.red);
@@ -85,7 +98,10 @@ export default function DailyGame() {
               onClick={checkGuess}
               className="w-full py-2 bg-[rgb(50,50,50)] text-gray-200 font-semibold rounded-xl hover:bg-[rgb(60,60,60)] transition-all"
             >
-              Guess
+              {
+                guessCount > 5 ? "Reset" : `Guess ${guessCount}/5`
+              }
+
             </button>
           </div>
         </motion.div>
