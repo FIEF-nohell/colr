@@ -46,7 +46,7 @@ export default function HistoryDisplay({ history }: HistoryDisplayProps) {
                         </div>
                         <div
                             style={{ backgroundColor: `rgb(${item.red}, ${item.green}, ${item.blue})` }}
-                            className="w-16 h-16 rounded-lg shadow-md text-center flex items-center justify-center mt-2"
+                            className="w-24 h-16 rounded-lg shadow-md text-center flex items-center justify-center mt-2"
                         >
                         </div>
                         <p className='mt-2 font-bold text-center'>{item.guessNumber}. Guess</p>
