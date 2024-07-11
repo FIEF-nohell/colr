@@ -11,7 +11,6 @@ export interface submittedColorType extends colorType {
     guessNumber: number;
 }
 
-
 export interface monoColorType {
     c: number;
 }

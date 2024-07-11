@@ -18,6 +18,7 @@ export default function DailyGame() {
 
   useEffect(() => {
     setTargetColor(generateRandomColor(multiple))
+    setGuess(generateRandomColor(multiple))
   }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, color: keyof colorType) => {
@@ -35,7 +36,7 @@ export default function DailyGame() {
 
   const resetDailyGame = () => {
     setTargetColor(generateRandomColor(multiple));
-    setGuess({ red: 0, green: 0, blue: 0 });
+    setGuess(generateRandomColor(multiple))
     setHistory([]);
     setGuessCount(1)
     setFirstGuessTaken(false);

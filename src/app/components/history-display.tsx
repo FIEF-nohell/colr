@@ -20,7 +20,6 @@ export default function HistoryDisplay({ history }: HistoryDisplayProps) {
                         >
                         </div>
                         <p className='mt-2 font-bold text-center rounded-full'>{item.guessNumber}. Guess</p>
-
                     </motion.div>
                 ))}
             </div>
