@@ -4,10 +4,17 @@ export interface colorType {
     blue: number;
 }
 
+interface highsAndLows {
+    // 0 is too low
+    // 1 is correct
+    // 2 is too high
+    red: number;
+    green: number;
+    blue: number;
+}
+
 export interface submittedColorType extends colorType {
-    rStatus: string;
-    gStatus: string;
-    bStatus: string;
+    feedback: highsAndLows;
     guessNumber: number;
 }
 

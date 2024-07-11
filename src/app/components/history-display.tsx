@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { HistoryDisplayProps } from "../services/types";
+import { ArrowDown, ArrowUp, Minus } from "./feedback-icons";
 
 export default function HistoryDisplay({ history }: HistoryDisplayProps) {
     return (
@@ -14,12 +15,41 @@ export default function HistoryDisplay({ history }: HistoryDisplayProps) {
                         transition={{ duration: 0.1 }}
                         whileHover={{ scale: 1.1 }}
                     >
+                        <div className="flex space-x-2">
+                            {(["red", "green", "blue"] as const).map((color) => (
+                                <div key={color} className="flex flex-col items-center">
+                                    {/* too low */}
+                                    {item.feedback[color] === 0 &&
+                                        <>
+                                            {item[color]}
+                                            <ArrowUp />
+                                        </>
+                                    }
+
+                                    {/* correct */}
+                                    {item.feedback[color] === 1 &&
+                                        <>
+                                            {item[color]}
+                                            <Minus />
+                                        </>
+                                    }
+
+                                    {/* too high */}
+                                    {item.feedback[color] === 2 &&
+                                        <>
+                                            {item[color]}
+                                            <ArrowDown />
+                                        </>
+                                    }
+                                </div>
+                            ))}
+                        </div>
                         <div
                             style={{ backgroundColor: `rgb(${item.red}, ${item.green}, ${item.blue})` }}
-                            className="w-16 h-16 rounded-lg shadow-md text-center flex items-center justify-center"
+                            className="w-16 h-16 rounded-lg shadow-md text-center flex items-center justify-center mt-2"
                         >
                         </div>
-                        <p className='mt-2 font-bold text-center rounded-full'>{item.guessNumber}. Guess</p>
+                        <p className='mt-2 font-bold text-center'>{item.guessNumber}. Guess</p>
                     </motion.div>
                 ))}
             </div>

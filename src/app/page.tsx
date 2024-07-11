@@ -53,12 +53,10 @@ export default function DailyGame() {
     guess.red = Number(guess.red);
     guess.green = Number(guess.green);
     guess.blue = Number(guess.blue);
-    const rStatus = getStatus(Number(guess.red), targetColor.red);
-    const gStatus = getStatus(Number(guess.green), targetColor.green);
-    const bStatus = getStatus(Number(guess.blue), targetColor.blue);
-    const isCorrect = rStatus === 'correct' && gStatus === 'correct' && bStatus === 'correct';
+    const feedback = getStatus(guess, targetColor);
+    const isCorrect = feedback.red === 1 && feedback.green === 1 && feedback.blue === 1;
 
-    setHistory(prev => [{ ...guess, rStatus, gStatus, bStatus, guessNumber }, ...prev].slice(0, 5));
+    setHistory(prev => [{ ...guess, feedback, guessNumber }, ...prev].slice(0, 5));
     if (isCorrect) {
       alert("Correct!")
     }

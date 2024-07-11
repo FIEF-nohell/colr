@@ -14,13 +14,39 @@ function rnd(multiplier: number) {
     return Math.floor(Math.random() * (256 / multiplier)) * multiplier;
 }
 
-export function getStatus(guess: number, target: number) {
-    if (guess < target) {
-        return 'low';
-    } else if (guess > target) {
-        return 'high';
+export function getStatus(guess: colorType, target: colorType) {
+    let infoRed: number = 0;
+    let infoGreen: number = 0;
+    let infoBlue: number = 0;
+
+    // Compare red values
+    if (guess.red < target.red) {
+        infoRed = 0; // too low
+    } else if (guess.red === target.red) {
+        infoRed = 1; // correct
+    } else if (guess.red > target.red) {
+        infoRed = 2; // too high
     }
-    return 'correct';
+
+    // Compare green values
+    if (guess.green < target.green) {
+        infoGreen = 0; // too low
+    } else if (guess.green === target.green) {
+        infoGreen = 1; // correct
+    } else if (guess.green > target.green) {
+        infoGreen = 2; // too high
+    }
+
+    // Compare blue values
+    if (guess.blue < target.blue) {
+        infoBlue = 0; // too low
+    } else if (guess.blue === target.blue) {
+        infoBlue = 1; // correct
+    } else if (guess.blue > target.blue) {
+        infoBlue = 2; // too high
+    }
+
+    return { red: infoRed, green: infoGreen, blue: infoBlue };
 }
 
 function hashCode(str: string): number {
