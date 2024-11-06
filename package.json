@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "predeploy": "npm run build",
-    "deploy": "npm run build"
+    "deploy": "npm i && npm run build"
   },
   "dependencies": {
     "framer-motion": "^11.3.0",
