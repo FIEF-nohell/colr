@@ -5,6 +5,7 @@ import { colorType, submittedColorType } from './services/types';
 import { motion } from 'framer-motion';
 import RGBInputs from './components/rgb-inputs';
 import HistoryDisplay from './components/history-display';
+import confetti from 'canvas-confetti';
 
 export default function DailyGame() {
   const [date] = useState(new Date());
@@ -15,11 +16,18 @@ export default function DailyGame() {
   const [devMode, setDevMode] = useState(false);
   const [firstGuessTaken, setFirstGuessTaken] = useState(false);
   const [guessCount, setGuessCount] = useState(1)
+  const [gameWon, setGameWon] = useState(false)
 
   useEffect(() => {
     setTargetColor(generateRandomColor(multiple))
     setGuess(generateRandomColor(multiple))
   }, [])
+
+  useEffect(() => {
+    if (gameWon) {
+      confetti({ particleCount: 200, spread: 70, origin: { y: 0.6 } })
+    }
+  }, [gameWon])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, color: keyof colorType) => {
     const inputValue = e.target.value;
@@ -40,6 +48,7 @@ export default function DailyGame() {
     setHistory([]);
     setGuessCount(1)
     setFirstGuessTaken(false);
+    setGameWon(false);
   };
 
   const checkGuess = () => {
@@ -58,7 +67,7 @@ export default function DailyGame() {
 
     setHistory(prev => [{ ...guess, feedback, guessNumber }, ...prev].slice(0, 5));
     if (isCorrect) {
-      alert("Correct!")
+      setGameWon(true)
     }
   };
 
@@ -97,11 +106,11 @@ export default function DailyGame() {
             <RGBInputs guess={guess} handleChange={handleChange}></RGBInputs>
 
             <button
-              onClick={checkGuess}
+              onClick={gameWon || guessCount > 5 ? resetDailyGame : checkGuess}
               className="w-full py-2 bg-[rgb(50,50,50)] text-gray-200 font-semibold rounded-xl hover:bg-[rgb(60,60,60)] transition-all"
             >
               {
-                guessCount > 5 ? "Reset" : `Guess ${guessCount}/5`
+                gameWon ? "You won, restart" : guessCount > 5 ? "Reset" : `Guess ${guessCount}/5`
               }
 
             </button>
